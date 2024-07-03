@@ -4,6 +4,7 @@
 #include <WinSock2.h>
 #include <windows.h>
 #include <vector>
+#include <string>
 
 typedef HRESULT (*FPCOMPCREATOR) (const IID&, void**);
 

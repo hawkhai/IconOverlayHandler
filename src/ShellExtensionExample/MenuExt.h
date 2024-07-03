@@ -7,6 +7,7 @@
 #include <vector>
 #include <memory>
 #include <shlobj.h>
+#include <string>
 
 namespace example
 {
