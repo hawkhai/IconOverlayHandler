@@ -81,6 +81,10 @@ namespace example
 
     STDMETHODIMP OverlayIconExt::GetPriority(int* pPriority)
     {
+        if (!pPriority)
+        {
+            return E_POINTER;
+        }
         if(*pPriority)
         {
             return E_INVALIDARG;
