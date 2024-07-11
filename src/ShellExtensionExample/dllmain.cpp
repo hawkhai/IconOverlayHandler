@@ -5,8 +5,9 @@
 #include <vector>
 #include <sstream>
 #include <memory>
+#include <iostream>
 
-#include "ClassFactory.h"         
+#include "ClassFactory.h"
 #include "Utils.h"
 #include "Global.h"
 
@@ -65,6 +66,33 @@ void WaitForDll_InitToComplete()
     }
 }
 
+void GetCurrentDllName(HMODULE hModule)
+{
+    // 用于存储 DLL 文件名的缓冲区
+    char dllPath[MAX_PATH] = { 0 };
+
+    // 获取模块文件名
+    if (GetModuleFileNameA(hModule, dllPath, MAX_PATH) != 0)
+    {
+        // 解析文件路径，提取文件名
+        char* dllName = strrchr(dllPath, '\\');
+        if (dllName != nullptr)
+        {
+            dllName++; // 跳过反斜杠
+            std::cout << "Current DLL Name: " << dllName << std::endl;
+            MessageBoxA(NULL, dllName, dllName, MB_OK);
+        }
+        else
+        {
+            std::cerr << "Failed to parse DLL name from path." << std::endl;
+        }
+    }
+    else
+    {
+        std::cerr << "Failed to get module file name." << std::endl;
+    }
+}
+
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 {
     switch (dwReason)
@@ -72,6 +100,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 
     case DLL_PROCESS_ATTACH:
         {
+            GetCurrentDllName(hModule);
             g_Dll.reset(new Global());
             g_Dll->DllInst(hModule);
             DLL_Init();
