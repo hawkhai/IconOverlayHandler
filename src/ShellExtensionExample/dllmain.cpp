@@ -6,14 +6,20 @@
 #include <sstream>
 #include <memory>
 #include <iostream>
+#include <assert.h>
+#include <stdio.h>
 
 #include "ClassFactory.h"
 #include "Utils.h"
 #include "Global.h"
 
+#include "shlwapi.h"
+#pragma comment(lib, "shlwapi.lib")
+
 const std::wstring kExtensionsName(L"ExampleShellExt");
 std::unique_ptr<Global> g_Dll;
 volatile bool g_ReadyToUnload = false;
+volatile HMODULE g_hModule = nullptr;
 
 struct CoTaskMemFreeGuard
 {
@@ -66,30 +72,37 @@ void WaitForDll_InitToComplete()
     }
 }
 
-void GetCurrentDllName(HMODULE hModule)
-{
-    // 用于存储 DLL 文件名的缓冲区
-    char dllPath[MAX_PATH] = { 0 };
+// 返回开始写文件的地址偏移。
+long appendfile(const char* fpath, const char* data, long length) {
+    FILE* fs = fopen(fpath, "ab");
+    assert(fs);
+    if (!fs) return -1;
+    fseek(fs, 0, SEEK_END);
+    long offset = ftell(fs);
+    fwrite(data, 1, length, fs);
+    fclose(fs);
+    return offset;
+}
 
-    // 获取模块文件名
+void logfile(HMODULE hModule)
+{
+#define LOG_FILE "E:\\logfile.txt"
+    if (!PathFileExistsA(LOG_FILE)) {
+        return; // 只有存在才写日志。
+    }
+    char dllPath[MAX_PATH] = { 0 };
+    if (GetModuleFileNameA(NULL, dllPath, MAX_PATH) != 0)
+    {
+        long length = strlen(dllPath);
+        appendfile(LOG_FILE, dllPath, length);
+        appendfile(LOG_FILE, "\r\n", 2);
+    }
     if (GetModuleFileNameA(hModule, dllPath, MAX_PATH) != 0)
     {
-        // 解析文件路径，提取文件名
-        char* dllName = strrchr(dllPath, '\\');
-        if (dllName != nullptr)
-        {
-            dllName++; // 跳过反斜杠
-            std::cout << "Current DLL Name: " << dllName << std::endl;
-            MessageBoxA(NULL, dllName, dllName, MB_OK);
-        }
-        else
-        {
-            std::cerr << "Failed to parse DLL name from path." << std::endl;
-        }
-    }
-    else
-    {
-        std::cerr << "Failed to get module file name." << std::endl;
+        long length = strlen(dllPath);
+        appendfile(LOG_FILE, dllPath, length);
+        appendfile(LOG_FILE, "\r\n", 2);
+        appendfile(LOG_FILE, "\r\n", 2);
     }
 }
 
@@ -100,10 +113,11 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 
     case DLL_PROCESS_ATTACH:
         {
-            GetCurrentDllName(hModule);
+            g_hModule = hModule;
             g_Dll.reset(new Global());
             g_Dll->DllInst(hModule);
             DLL_Init();
+            logfile(g_hModule);
             break;
         }
 
