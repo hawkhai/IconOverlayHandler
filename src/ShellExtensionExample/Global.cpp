@@ -3,14 +3,13 @@
 #include "OverlayIconExt.h"
 #include "MenuExt.h"
 
-
 const CLSID CLSID_MenuExt = // ÓÒ¼ü²Ëµ¥¡£
-{ 0x95fb130, 0x783f, 0x43d7, { 0xb4, 0xd5, 0xd2, 0x7d, 0xcf, 0xf3, 0x83, 0xc3 } };
-const wchar_t* FRIENDLY_NAME_MenuExt = L"FastPdfContextMenu";
+{ 0xf69e6532, 0xaa05, 0x4631, { 0x80, 0x1d, 0xce, 0x11, 0xd0, 0x87, 0x57, 0x59 } };
+const wchar_t* FRIENDLY_NAME_MenuExt = L"FastPdfContextMenuExt";
 
 const CLSID CLSID_OverlayIconExt = // Í¼±êµþ¼Ó
-{ 0x461b9859, 0x6952, 0x47ed, { 0x93, 0x63, 0x69, 0x86, 0xda, 0xec, 0x39, 0xeb } };
-const wchar_t* FRIENDLY_NAME_OverlayIconExt = L"FastPdfOverlayIcon";
+{ 0xdf363528, 0x660b, 0x447b, { 0xb8, 0xb6, 0x8a, 0x93, 0x35, 0x47, 0x74, 0x97 } };
+const wchar_t* FRIENDLY_NAME_OverlayIconExt = L"FastPdfOverlayIconExt";
 
 Global::Global(): m_hInst(nullptr), m_cDllRef(0)
 {
@@ -31,7 +30,7 @@ void Global::InitializeExtensionsData()
         )
     );
 
-#if 0
+#if 1
     m_FactoryData.push_back(
         FactoryInfo(CLSID_MenuExt, 
         &example::MenuExt::ComponentCreator,
