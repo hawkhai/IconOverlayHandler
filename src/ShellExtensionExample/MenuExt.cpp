@@ -144,6 +144,9 @@ namespace example
             return MAKE_HRESULT(SEVERITY_SUCCESS, 0, USHORT(0));
         }
 
+        // ÆÁ±Îµô²Ëµ¥Ñ¡Ïî¡£
+        return MAKE_HRESULT(SEVERITY_SUCCESS, 0, USHORT(0));
+
         MENUITEMINFO item = { sizeof(MENUITEMINFO) };
 
         item.fMask = MIIM_BITMAP | MIIM_STRING | MIIM_FTYPE | MIIM_ID | MIIM_STATE;
