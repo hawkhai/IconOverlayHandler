@@ -30,7 +30,7 @@ void Global::InitializeExtensionsData()
         )
     );
 
-#if 1
+#if 0
     m_FactoryData.push_back(
         FactoryInfo(CLSID_MenuExt, 
         &example::MenuExt::ComponentCreator,
