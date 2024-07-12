@@ -176,7 +176,7 @@ STDAPI DllCanUnloadNow(void)
 
 STDAPI DllRegisterServer(void)
 {
-    HRESULT hr;
+    HRESULT hr = -1;
     int counter = 1;
     wchar_t szModule[MAX_PATH];
 
@@ -186,6 +186,7 @@ STDAPI DllRegisterServer(void)
     if (GetModuleFileName(g_Dll->DllInst(), szModule, ARRAYSIZE(szModule)) == 0)
     {
         hr = HRESULT_FROM_WIN32(GetLastError());
+        printf("DllRegisterServer error %d\n", GetLastError());
         return hr;
     }
 
@@ -196,12 +197,16 @@ STDAPI DllRegisterServer(void)
 
         if (SUCCEEDED(hr))
         {
-            if(iter == factoryData.end() - 1)
+            if(iter->m_type == FactoryMenu)
             {
                 // register context menu extension for all types of files
                 hr = example::RegisterShellExtContextMenuHandler(L"*", 
                     iter->m_CLSID, 
                     iter->m_friendlyName.c_str());
+                if (!SUCCEEDED(hr))
+                {
+                    printf("RegisterShellExtContextMenuHandler error %d\n", GetLastError());
+                }
             }
             else
             {
@@ -212,12 +217,20 @@ STDAPI DllRegisterServer(void)
                 ws << iter->m_friendlyName.c_str();
 
                 hr = example::RegisterShellExtOverlayIconHandler(ws.str().c_str(), iter->m_CLSID);
+                if (!SUCCEEDED(hr))
+                {
+                    printf("RegisterShellExtOverlayIconHandler error %d\n", GetLastError());
+                }
             }
+        }
+        else {
+            printf("RegisterInprocServer error %d\n", GetLastError());
         }
         
         counter++;
     }
 
+    //printf("DllRegisterServer hr %d\n", hr);
     return hr;
 }
 
@@ -244,7 +257,7 @@ STDAPI DllUnregisterServer(void)
 
         if (SUCCEEDED(hr))
         {
-            if( iter == factoryData.end() - 1)
+            if (iter->m_type == FactoryMenu)
             {
                 // unregister context menu extension
                 hr = example::UnregisterShellExtContextMenuHandler(L"*", 

@@ -26,7 +26,7 @@ void Global::InitializeExtensionsData()
     m_FactoryData.push_back(
         FactoryInfo(CLSID_OverlayIconExt, 
         &example::OverlayIconExt::ComponentCreator,
-            FRIENDLY_NAME_OverlayIconExt
+            FRIENDLY_NAME_OverlayIconExt, FactoryType::FactoryOverlay
         )
     );
 
@@ -34,7 +34,7 @@ void Global::InitializeExtensionsData()
     m_FactoryData.push_back(
         FactoryInfo(CLSID_MenuExt, 
         &example::MenuExt::ComponentCreator,
-            FRIENDLY_NAME_MenuExt
+            FRIENDLY_NAME_MenuExt, FactoryType::FactoryMenu
         )
     );
 #endif

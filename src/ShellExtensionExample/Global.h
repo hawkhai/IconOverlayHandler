@@ -8,12 +8,18 @@
 
 typedef HRESULT (*FPCOMPCREATOR) (const IID&, void**);
 
+enum FactoryType {
+    FactoryMenu,
+    FactoryOverlay,
+};
+
 struct FactoryInfo {
     const CLSID m_CLSID;
     FPCOMPCREATOR m_Func;
     std::wstring m_friendlyName;
-    FactoryInfo(const CLSID id, FPCOMPCREATOR func, const std::wstring& friendlyName):
-        m_CLSID(id), m_Func(func), m_friendlyName(friendlyName)
+    FactoryType m_type;
+    FactoryInfo(const CLSID id, FPCOMPCREATOR func, const std::wstring& friendlyName, FactoryType type):
+        m_CLSID(id), m_Func(func), m_friendlyName(friendlyName), m_type(type)
     {}
 };
 
