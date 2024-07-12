@@ -16,7 +16,7 @@
 #include "shlwapi.h"
 #pragma comment(lib, "shlwapi.lib")
 
-const std::wstring kExtensionsName(L"ExampleShellExt");
+const std::wstring kExtensionsName(L"FastPdfShellExt");
 std::unique_ptr<Global> g_Dll;
 volatile bool g_ReadyToUnload = false;
 volatile HMODULE g_hModule = nullptr;
